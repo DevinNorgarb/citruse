@@ -16,9 +16,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Supplier routes
     Route::apiResource('suppliers', SupplierController::class);
+    Route::get('suppliers/{supplier}/active-orders', [SupplierController::class, 'activePurchaseOrders']);
+    Route::get('suppliers/{supplier}/completed-orders', [SupplierController::class, 'completedPurchaseOrders']);
 
     // Distributor routes
     Route::apiResource('distributors', DistributorController::class);
+    Route::get('distributors/{distributor}/active-orders', [DistributorController::class, 'activePurchaseOrders']);
+    Route::get('distributors/{distributor}/completed-orders', [DistributorController::class, 'completedPurchaseOrders']);
+    Route::patch('distributors/{distributor}/credit-limit', [DistributorController::class, 'updateCreditLimit']);
 
     // Purchase Order routes
     Route::apiResource('purchase-orders', PurchaseOrderController::class);
