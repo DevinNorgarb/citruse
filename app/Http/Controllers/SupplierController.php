@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
@@ -12,7 +13,8 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        //
+        $suppliers = Supplier::latest()->paginate(10);
+        return response()->json($suppliers);
     }
 
     /**
@@ -28,7 +30,29 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'business_name' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'country' => 'required|string|max:255',
+            'vat_number' => 'nullable|string|max:255',
+            'registration_number' => 'nullable|string|max:255',
+            'sales_contact_name' => 'required|string|max:255',
+            'sales_contact_email' => 'required|email|max:255',
+            'sales_contact_phone' => 'required|string|max:255',
+            'logistics_contact_name' => 'nullable|string|max:255',
+            'logistics_contact_email' => 'nullable|email|max:255',
+            'logistics_contact_phone' => 'nullable|string|max:255',
+            'payment_terms' => 'nullable|string',
+            'currency' => 'required|string|max:3',
+            'is_active' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $supplier = Supplier::create($request->all());
+        return response()->json($supplier, 201);
     }
 
     /**
@@ -36,7 +60,7 @@ class SupplierController extends Controller
      */
     public function show(Supplier $supplier)
     {
-        //
+        return response()->json($supplier);
     }
 
     /**
@@ -52,7 +76,29 @@ class SupplierController extends Controller
      */
     public function update(Request $request, Supplier $supplier)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'business_name' => 'sometimes|required|string|max:255',
+            'address' => 'sometimes|required|string|max:255',
+            'country' => 'sometimes|required|string|max:255',
+            'vat_number' => 'nullable|string|max:255',
+            'registration_number' => 'nullable|string|max:255',
+            'sales_contact_name' => 'sometimes|required|string|max:255',
+            'sales_contact_email' => 'sometimes|required|email|max:255',
+            'sales_contact_phone' => 'sometimes|required|string|max:255',
+            'logistics_contact_name' => 'nullable|string|max:255',
+            'logistics_contact_email' => 'nullable|email|max:255',
+            'logistics_contact_phone' => 'nullable|string|max:255',
+            'payment_terms' => 'nullable|string',
+            'currency' => 'sometimes|required|string|max:3',
+            'is_active' => 'boolean',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $supplier->update($request->all());
+        return response()->json($supplier);
     }
 
     /**
@@ -60,6 +106,19 @@ class SupplierController extends Controller
      */
     public function destroy(Supplier $supplier)
     {
-        //
+        $supplier->delete();
+        return response()->json(null, 204);
+    }
+
+    public function activePurchaseOrders(Supplier $supplier)
+    {
+        $orders = $supplier->activePurchaseOrders()->with('items')->get();
+        return response()->json($orders);
+    }
+
+    public function completedPurchaseOrders(Supplier $supplier)
+    {
+        $orders = $supplier->completedPurchaseOrders()->with('items')->get();
+        return response()->json($orders);
     }
 }
