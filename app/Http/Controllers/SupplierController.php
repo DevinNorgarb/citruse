@@ -5,16 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class SupplierController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the suppliers.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $suppliers = Supplier::latest()->paginate(10);
-        return response()->json($suppliers);
+        // Include the user in the response to verify authentication is working
+        return Inertia::render('Suppliers/Index', [
+            'auth_check' => [
+                'user' => $request->user(),
+                'is_authenticated' => auth()->check(),
+            ]
+        ]);
     }
 
     /**

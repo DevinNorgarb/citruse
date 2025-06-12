@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreSupplierRequest extends FormRequest
+class StoreDistributorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class StoreSupplierRequest extends FormRequest
             'business_name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'country' => 'required|string|max:100',
-            'vat_number' => 'required|string|max:50|unique:suppliers',
+            'vat_number' => 'nullable|string|max:50',
             'registration_number' => 'nullable|string|max:50',
             'sales_contact_name' => 'required|string|max:100',
             'sales_contact_email' => 'required|email|max:100',
@@ -33,7 +33,8 @@ class StoreSupplierRequest extends FormRequest
             'logistics_contact_name' => 'nullable|string|max:100',
             'logistics_contact_email' => 'nullable|email|max:100',
             'logistics_contact_phone' => 'nullable|string|max:20',
-            'payment_terms' => 'nullable|string|max:100',
+            'credit_terms' => 'nullable|string|max:100',
+            'credit_limit' => 'nullable|numeric|min:0',
             'currency' => 'required|string|size:3',
             'is_active' => 'boolean',
         ];
@@ -52,6 +53,7 @@ class StoreSupplierRequest extends FormRequest
             'sales_contact_name' => 'sales contact name',
             'sales_contact_email' => 'sales contact email',
             'sales_contact_phone' => 'sales contact phone',
+            'credit_limit' => 'credit limit',
         ];
     }
 }

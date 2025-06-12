@@ -1,13 +1,14 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
+const page = usePage();
+const user = computed(() => page.props.auth.user);
 </script>
 
 <template>
@@ -33,24 +34,36 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
-                                <NavLink
+                                <Link
                                     :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
+                                    :class="{
+                                        'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out': true,
+                                        'border-indigo-400 text-gray-900': route().current('dashboard'),
+                                        'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': !route().current('dashboard')
+                                    }"
                                 >
                                     Dashboard
-                                </NavLink>
-                                <NavLink
+                                </Link>
+                                <Link
                                     :href="route('suppliers.index')"
-                                    :active="route().current('suppliers.index')"
+                                    :class="{
+                                        'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out': true,
+                                        'border-indigo-400 text-gray-900': route().current('suppliers.index'),
+                                        'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': !route().current('suppliers.index')
+                                    }"
                                 >
                                     Suppliers
-                                </NavLink>
-                                <NavLink
+                                </Link>
+                                <Link
                                     :href="route('distributors.index')"
-                                    :active="route().current('distributors.index')"
+                                    :class="{
+                                        'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out': true,
+                                        'border-indigo-400 text-gray-900': route().current('distributors.index'),
+                                        'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': !route().current('distributors.index')
+                                    }"
                                 >
                                     Distributors
-                                </NavLink>
+                                </Link>
                             </div>
                         </div>
 
@@ -64,7 +77,7 @@ const showingNavigationDropdown = ref(false);
                                                 type="button"
                                                 class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                             >
-                                                {{ $page.props.auth.user.name }}
+                                                {{ user ? user.name : 'User' }}
 
                                                 <svg
                                                     class="-me-0.5 ms-2 h-4 w-4"
@@ -88,13 +101,14 @@ const showingNavigationDropdown = ref(false);
                                         >
                                             Profile
                                         </DropdownLink>
-                                        <DropdownLink
-                                            :href="route('logout')"
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </DropdownLink>
+                                        <form method="POST" @submit.prevent="$inertia.post(route('logout'))">
+                                            <button
+                                                type="submit"
+                                                class="w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
+                                            >
+                                                Log Out
+                                            </button>
+                                        </form>
                                     </template>
                                 </Dropdown>
                             </div>
@@ -152,24 +166,36 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
+                        <Link
                             :href="route('dashboard')"
-                            :active="route().current('dashboard')"
+                            :class="{
+                                'block w-full pl-3 pr-4 py-2 border-l-4 text-left text-base font-medium transition duration-150 ease-in-out': true,
+                                'border-indigo-400 text-indigo-700 bg-indigo-50': route().current('dashboard'),
+                                'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300': !route().current('dashboard')
+                            }"
                         >
                             Dashboard
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
+                        </Link>
+                        <Link
                             :href="route('suppliers.index')"
-                            :active="route().current('suppliers.index')"
+                            :class="{
+                                'block w-full pl-3 pr-4 py-2 border-l-4 text-left text-base font-medium transition duration-150 ease-in-out': true,
+                                'border-indigo-400 text-indigo-700 bg-indigo-50': route().current('suppliers.index'),
+                                'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300': !route().current('suppliers.index')
+                            }"
                         >
                             Suppliers
-                        </ResponsiveNavLink>
-                        <ResponsiveNavLink
+                        </Link>
+                        <Link
                             :href="route('distributors.index')"
-                            :active="route().current('distributors.index')"
+                            :class="{
+                                'block w-full pl-3 pr-4 py-2 border-l-4 text-left text-base font-medium transition duration-150 ease-in-out': true,
+                                'border-indigo-400 text-indigo-700 bg-indigo-50': route().current('distributors.index'),
+                                'border-transparent text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300': !route().current('distributors.index')
+                            }"
                         >
                             Distributors
-                        </ResponsiveNavLink>
+                        </Link>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -180,24 +206,28 @@ const showingNavigationDropdown = ref(false);
                             <div
                                 class="text-base font-medium text-gray-800"
                             >
-                                {{ $page.props.auth.user.name }}
+                                {{ user ? user.name : 'User' }}
                             </div>
                             <div class="text-sm font-medium text-gray-500">
-                                {{ $page.props.auth.user.email }}
+                                {{ user ? user.email : 'user@example.com' }}
                             </div>
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                :href="route('logout')"
-                                method="post"
-                                as="button"
+                            <Link
+                                :href="route('profile.edit')"
+                                class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out"
                             >
-                                Log Out
-                            </ResponsiveNavLink>
+                                Profile
+                            </Link>
+                            <form method="POST" @submit.prevent="$inertia.post(route('logout'))">
+                                <button
+                                    type="submit"
+                                    class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 transition duration-150 ease-in-out"
+                                >
+                                    Log Out
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

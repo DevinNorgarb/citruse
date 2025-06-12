@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\PurchaseOrderLineItem;
 
 class PurchaseOrderLineItemSeeder extends Seeder
 {
@@ -12,6 +13,6 @@ class PurchaseOrderLineItemSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        PurchaseOrderLineItem::factory(50)->create();
     }
 }

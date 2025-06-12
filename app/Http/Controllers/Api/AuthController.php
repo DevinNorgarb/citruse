@@ -3,43 +3,59 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Http\Requests\LoginRequest;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    protected AuthService $authService;
+
+    public function __construct(AuthService $authService)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $this->authService = $authService;
+    }
 
-        $user = User::where('email', $request->email)->first();
+    /**
+     * Handle user login
+     *
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
+    public function login(LoginRequest $request): JsonResponse
+    {
+        $request->authenticate();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
+        $authData = $this->authService->login($request->validated());
 
         return response()->json([
-            'token' => $user->createToken('auth-token')->plainTextToken,
-            'user' => $user,
+            'token' => $authData['token'],
+            'user' => $authData['user'],
         ]);
     }
 
-    public function logout(Request $request)
+    /**
+     * Handle user logout
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function logout(Request $request): JsonResponse
     {
-        $request->user()->currentAccessToken()->delete();
+        $this->authService->logout($request);
 
         return response()->json(['message' => 'Logged out successfully']);
     }
 
-    public function user(Request $request)
+    /**
+     * Get authenticated user
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function user(Request $request): JsonResponse
     {
-        return response()->json($request->user());
+        return response()->json($this->authService->getAuthenticatedUser($request));
     }
 }

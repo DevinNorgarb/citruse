@@ -5,16 +5,22 @@ namespace App\Http\Controllers;
 use App\Models\Distributor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Inertia\Inertia;
 
 class DistributorController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the distributors.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $distributors = Distributor::latest()->paginate(10);
-        return response()->json($distributors);
+        // Include the user in the response to verify authentication is working
+        return Inertia::render('Distributors/Index', [
+            'auth_check' => [
+                'user' => $request->user(),
+                'is_authenticated' => auth()->check(),
+            ]
+        ]);
     }
 
     /**
@@ -61,6 +67,7 @@ class DistributorController extends Controller
      */
     public function show(Distributor $distributor)
     {
+        dump($distributor);
         return response()->json($distributor);
     }
 

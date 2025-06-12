@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\DistributorController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,14 +26,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Supplier Management
-    Route::get('/suppliers', function () {
-        return Inertia::render('Suppliers/Index');
-    })->name('suppliers.index');
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
 
     // Distributor Management
-    Route::get('/distributors', function () {
-        return Inertia::render('Distributors/Index');
-    })->name('distributors.index');
+    Route::get('/distributors', [DistributorController::class, 'index'])->name('distributors.index');
 });
 
 require __DIR__.'/auth.php';
